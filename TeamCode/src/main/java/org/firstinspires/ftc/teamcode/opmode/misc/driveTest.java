@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmode.misc;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
-import org.firstinspires.ftc.teamcode.config.subsystem.DriveSubsystem;
-public class ddTest extends OpMode {
+import org.firstinspires.ftc.teamcode.config.subsystems.DriveSubsystem;
+public class driveTest extends OpMode {
     protected GamepadEx driver;
     private DriveSubsystem d;
 
