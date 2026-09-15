@@ -16,6 +16,6 @@ public class driveTest extends OpMode {
 
     @Override
     public void loop() {
-        d.drive(driver.getLeftX(), -driver.getLeftY(),driver.getRightX());
+        d.drive(-driver.getLeftX(), -driver.getLeftY(),driver.getRightX());
     }
 }
