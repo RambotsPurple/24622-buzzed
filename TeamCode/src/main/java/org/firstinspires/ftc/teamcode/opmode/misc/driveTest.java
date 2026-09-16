@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmode.misc;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import org.firstinspires.ftc.teamcode.config.subsystems.DriveSubsystem;
+@TeleOp
 public class driveTest extends OpMode {
     protected GamepadEx driver;
     private DriveSubsystem d;
@@ -19,3 +21,4 @@ public class driveTest extends OpMode {
         d.drive(-driver.getLeftX(), -driver.getLeftY(),driver.getRightX());
     }
 }
+
