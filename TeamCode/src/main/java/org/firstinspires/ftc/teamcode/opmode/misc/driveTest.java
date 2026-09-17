@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opmode.misc;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+
 import org.firstinspires.ftc.teamcode.config.subsystems.DriveSubsystem;
 @TeleOp
 public class driveTest extends OpMode {
@@ -19,6 +21,7 @@ public class driveTest extends OpMode {
     @Override
     public void loop() {
         d.drive(-driver.getLeftX(), -driver.getLeftY(),driver.getRightX());
+        if(driver.getButton(GamepadKeys.Button.B))d.resetAngle();
     }
 }
 
