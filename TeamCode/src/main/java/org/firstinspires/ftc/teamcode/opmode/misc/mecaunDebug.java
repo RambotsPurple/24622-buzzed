@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmode.misc;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.config.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.config.Subsystem.DriveSubsystem;
 
 @TeleOp(name = "mech debug")
 public class mecaunDebug extends LinearOpMode {

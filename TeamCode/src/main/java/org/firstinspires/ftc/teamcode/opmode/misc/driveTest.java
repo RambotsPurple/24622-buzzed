@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.config.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.config.Subsystem.DriveSubsystem;
 @TeleOp
 public class driveTest extends OpMode {
     protected GamepadEx driver;
