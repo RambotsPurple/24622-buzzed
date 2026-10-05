@@ -19,7 +19,6 @@ public class LimeLightSubsystem {
         limelight = hw.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         this.alliance = alliance == Alliance.BLUE?0:1;
-        this.pipeline =
         limelight.pipelineSwitch(this.alliance);
     } //end of constructor
 
@@ -28,12 +27,6 @@ public class LimeLightSubsystem {
     }//end of lStart
 
     public double getDistTag() {
-        switch(pipeline){
-            case COLOR:
-                break;
-            Default:
-
-        }
         FiducialResult tag = null;
         double tagDist = 0;
         List<FiducialResult> results = limelight.getLatestResult().getFiducialResults();

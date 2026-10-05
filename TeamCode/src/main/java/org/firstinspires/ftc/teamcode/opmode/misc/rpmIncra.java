@@ -17,6 +17,7 @@ public class rpmIncra extends OpMode {
     public GamepadEx p;
     double targetRPM = 1000;
     double ticksPerRev = 28;
+
     @Override
     public void init() {
         s =hardwareMap.get(DcMotorEx.class, "s");

@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.config.pedro.Constants;
 
 import java.util.List;
 
-public class Robot {
+public class  Robot {
 
     private final List<LynxModule> allHubs;
     private final Timer loop = new Timer();
@@ -149,14 +149,14 @@ public class Robot {
         telemetry.addData("turnh",turn);
 
         ////params for drive
-        follower.setTeleOpDrive(
-                driver.getLeftY() ,
-                -driver.getLeftX() ,
-                turn,
-                false
-        );
-
-        follower.update();
+        // follower.setTeleOpDrive(
+        //         driver.getLeftY() ,
+        //         -driver.getLeftX() ,
+        //         turn,
+        //         false
+        // );
+        //
+        // follower.update();
         telemetry.update();
         cs.run();
     } //end of periodic
@@ -166,10 +166,10 @@ public class Robot {
      */
     public void tStart() {
         //turnTimer = new ElapsedTime();
-        state = state.Manual;
-        limeLightSubsystem.lStart();
-        follower.update();
-        follower.startTeleopDrive(true);
+        // state = state.Manual;
+        // limeLightSubsystem.lStart();
+        // follower.update();
+        // follower.startTeleopDrive(true);
     } // end of tStart
 
 
