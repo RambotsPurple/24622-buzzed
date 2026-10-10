@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.config.Subsystem;
 
+import static org.firstinspires.ftc.teamcode.config.util.Pipeline.COLOR;
+
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.*;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -14,8 +16,8 @@ import java.util.List;
 public class LimeLightSubsystem {
     private final Limelight3A limelight;
     private int alliance;
-    private int pipeline;
-    public  LimeLightSubsystem(HardwareMap hw, Alliance alliance, Pipeline pipeline) {
+
+    public  LimeLightSubsystem(HardwareMap hw, Alliance alliance) {
         limelight = hw.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         this.alliance = alliance == Alliance.BLUE?0:1;
@@ -41,7 +43,7 @@ public class LimeLightSubsystem {
         }//end of for
 
         if(tag !=null){
-            tagDist = (tag.getCameraPoseTargetSpace().getPosition().z/ DistanceUnit.mPerInch);
+            tagDist = (tag.getCameraPoseTargetSpace().getPosition().z/ DistanceUnit.mmPerInch);
         }//end of if
         return tagDist;
 
@@ -67,6 +69,27 @@ public class LimeLightSubsystem {
 
         return tagYaw;
     } //end of getHoriError
+
+    public double getHorizontalErrorColor(){
+        double colorYaw = 0;
+        List<ColorResult> results = limelight.getLatestResult().getColorResults();
+        for (ColorResult cr : results) {
+            if(cr !=null){
+                colorYaw = cr.getTargetXDegrees();
+            }
+        }return colorYaw;
+    }
+    public double getColorDist(){
+        double colorDist = 0;
+        List<ColorResult> results = limelight.getLatestResult().getColorResults();
+        for (ColorResult cr : results) {
+            if(cr !=null){
+                colorDist = cr.getTargetPoseCameraSpace().getPosition().z/DistanceUnit.mmPerInch;
+            }
+        }return colorDist;
+    }
+    public void callPipeline(Pipeline pipeline){limelight.pipelineSwitch(pipeline == COLOR? 3:this.alliance );}
+
 
 
 

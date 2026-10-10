@@ -4,7 +4,7 @@ import com.seattlesolvers.solverslib.util.InterpLUT;
 public class lut {
 
     //Init the Look up table
-    InterpLUT interpLut = new InterpLUT();
+    protected final InterpLUT interpLut = new InterpLUT();
 
     /**
      * Points are in (x,y) such that
@@ -14,8 +14,15 @@ public class lut {
      * trying to succesfully get in the hive
      */
 
-    interpLut.add(1.1, 0.2);
+    public lut() {
+        //please replace this is example
+        interpLut.add(1.0, 2.0);
 
-    //generating final equation
-    interpLut.createLUT();
+
+        interpLut.createLUT();
+    }
+
+    public double getVelocity(double distance) {
+        return interpLut.get(distance);
+    }
 }
