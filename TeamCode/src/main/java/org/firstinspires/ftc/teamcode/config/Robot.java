@@ -31,6 +31,7 @@ public class Robot {
 
     private final List<LynxModule> allHubs;
     private final Timer loop = new Timer();
+    private Follower follower;
     public Alliance alliance;
     public CommandScheduler cs = CommandScheduler.getInstance();
     public ElapsedTime loopTimer;
@@ -52,7 +53,6 @@ public class Robot {
     private final Telemetry telemetry;
 
 
-    public ElapsedTime lastTime   = new ElapsedTime();
 
 
 
@@ -74,7 +74,7 @@ public class Robot {
         intakeSubsystem = new IntakeSubsystem(h);
         limeLightSubsystem = new LimeLightSubsystem(h,alliance);
         driveSubsystem  = new DriveSubsystem(h);
-        follower = Constants.createFollower(h);
+
         this.alliance = alliance;
         this.driver = new GamepadEx(driver);
         this.oper = new GamepadEx(oper);
@@ -88,7 +88,7 @@ public class Robot {
 
         loop.reset();
         cs.registerSubsystem(
-                shooterSubsystem, intakeSubsystem,limeLightSubsystem
+                shooterSubsystem, intakeSubsystem
         );
 
     } //end of teleop constructor
@@ -106,7 +106,7 @@ public class Robot {
         intakeSubsystem = new IntakeSubsystem(h);
         limeLightSubsystem = new LimeLightSubsystem(h, alliance);
         loopTimer = new ElapsedTime();
-
+        driveSubsystem = new DriveSubsystem(h);
         this.alliance = alliance;
         this.telemetry = telemetry;
 
@@ -117,7 +117,7 @@ public class Robot {
         }//end of for
 
         cs.registerSubsystem(
-                shooterSubsystem, intakeSubsystem,limeLightSubsystem
+                shooterSubsystem, intakeSubsystem
         ); // end of cs
 
     }//end of auto constructor
@@ -137,19 +137,8 @@ public class Robot {
 
         // logic for auto tracking
         double turn;
-
-
         telemetry.addData("turnh",turn);
-
-        ////params for drive
-        follower.setTeleOpDrive(
-                driver.getLeftY() ,
-                -driver.getLeftX() ,
-                turn,
-                false
-        );
-
-        follower.update();
+        driveSubsystem.drive(-driver.getLeftX(), -driver.getLeftY(),driver.getRightX());
         telemetry.update();
         cs.run();
     } //end of periodic
@@ -159,10 +148,7 @@ public class Robot {
      */
     public void tStart() {
         //turnTimer = new ElapsedTime();
-        state = state.Manual;
-        limeLightSubsystem.lStart();
-        follower.update();
-        follower.startTeleopDrive(true);
+        //limeLightSubsystem.lStart();
     } // end of tStart
 
 
@@ -170,65 +156,39 @@ public class Robot {
     /**
      * Sets up listeners at the start of teleOp
      */
-    //public void tele() {
-    //
-    //    // event listeners
-    //    // all input goes here except for driving which is passed in periodically
-    //    // --------------------
-    //
-    //    /*
-    //     * right trigger - hold: intake
-    //     * right bumper - toggle: indexer
-    //     * left bumper - toggle: Locked state so LLS take's over turn
-    //     * A - activate shooter
-    //     * B - deactivate shooter
-    //     */
-    //
-    //    new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
-    //            .whenActive(new IntakeCommand(intakeSubsystem, 1))
-    //            .whenInactive(new IntakeCommand(intakeSubsystem, 0));
-    //
-    //    oper.getGamepadButton(GamepadKeys.Button.A).toggleWhenActive(
-    //            new SetShooterVelocityCommand(shooterSubsystem, 5600),
-    //            new SetShooterVelocityCommand(shooterSubsystem, 0)
-    //    );
-    //
-    //    oper.getGamepadButton(GamepadKeys.Button.X).toggleWhenActive(
-    //            new SetShooterVelocityCommand(shooterSubsystem, 2800),
-    //            new SetShooterVelocityCommand(shooterSubsystem, 0)
-    //    );
-    //
-    //
-    //
-    //
-    //
-    //    oper.getGamepadButton(GamepadKeys.Button.B).toggleWhenActive(
-    //            new IndexCommand(indexerSubsystem, 1),
-    //            new IndexCommand(indexerSubsystem, 0)
-    //    );
-    //
-    //    new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
-    //            .whenActive( new ParallelCommandGroup(
-    //                    new IntakeCommand(intakeSubsystem, -.4),new IndexCommand(indexerSubsystem,-.4)))
-    //            .whenInactive( new ParallelCommandGroup(
-    //                    new IntakeCommand(intakeSubsystem, 0),new IndexCommand(indexerSubsystem,0)));
-    //
-    //
-    //    driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).toggleWhenActive(
-    //            new ParallelCommandGroup(
-    //                    new InstantCommand(()-> setState(state.Locked)),
-    //                    new InstantCommand(()-> lastTime.reset()),
-    //                    new InstantCommand(()-> lastError = limeLightSubsystem.getHorizontalError())
-    //            ),
-    //            new InstantCommand(()-> setState(state.Manual))
-    //    );
-    //
-    //    driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(
-    //            new InstantCommand(()-> follower.setPose(follower.getPose().withHeading(0)))
-    //    );
-    //
-    //
-    //} //end of tele method
+    public void tele() {
+
+        // event listeners
+        // all input goes here except for driving which is passed in periodically
+        // --------------------
+
+        /*
+         * right trigger - hold: intake
+         * right bumper - toggle: indexer
+         * left bumper - toggle: Locked state so LLS take's over turn
+         * A - activate shooter
+         * B - deactivate shooter
+         */
+
+        new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
+                .whenActive(new IntakeCommand(intakeSubsystem, 1))
+                .whenInactive(new IntakeCommand(intakeSubsystem, 0));
+
+        oper.getGamepadButton(GamepadKeys.Button.A).toggleWhenActive(
+                new SetShooterVelocityCommand(shooterSubsystem, 5600),
+                new SetShooterVelocityCommand(shooterSubsystem, 0)
+        );
+
+        oper.getGamepadButton(GamepadKeys.Button.X).toggleWhenActive(
+                new SetShooterVelocityCommand(shooterSubsystem, 2800),
+                new SetShooterVelocityCommand(shooterSubsystem, 0)
+        );
+
+
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(new InstantCommand(driveSubsystem::resetAngle));
+
+
+    } //end of tele method
 
 
 
@@ -246,14 +206,16 @@ public class Robot {
         //telemetry.addData("heading-w-follower", follower.getPose().getHeading());
         //telemetry.addData("state", state);
         //telemetry.addData("shooter 1 vel with ticks", shooterSubsystem.shooter1.getVelocity());
-        //telemetry.addData("shooter 2 vel", shooterSubsystem.shooter2.getVelocity());
-        //telemetry.addData("shooter RPM", shooterSubsystem.getRPM());
         telemetry.addLine("--------------------------LOOP TIMINGS------------------------");
         loopTimer.reset();
         telemetry.addData("Loop Time (ms)", loopTime);
         telemetry.addData("Loop Rate (Hz)", 1000 / loopTime); // Approximate
 
     } //end of teleTelemetry
+
+    public Alliance getAlliance(){
+        return this.alliance;
+    }
 
 
 } //end of Robot
