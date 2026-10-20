@@ -136,8 +136,8 @@ public class Robot {
         } // end of if
 
         // logic for auto tracking
-        double turn;
-        telemetry.addData("turnh",turn);
+        // double turn;
+        // telemetry.addData("turnh",turn);
         driveSubsystem.drive(-driver.getLeftX(), -driver.getLeftY(),driver.getRightX());
         telemetry.update();
         cs.run();
@@ -170,7 +170,7 @@ public class Robot {
          * B - deactivate shooter
          */
 
-        new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
+        new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
                 .whenActive(new IntakeCommand(intakeSubsystem, 1))
                 .whenInactive(new IntakeCommand(intakeSubsystem, 0));
 
@@ -195,8 +195,9 @@ public class Robot {
     /**
      * Telemetry data for teleOp
      */
-    public void teleTelemetry() {
+    public void teleTelemetryDebug() {
         double loopTime = loopTimer.milliseconds();
+        telemetry.addLine("Coach pay Attention(kuwar)");
         // telemetry.addData("ticks", shooterSubsystem.getCurrentPosition());
         telemetry.addData("alliance",alliance);
         telemetry.addLine("--------------------------SubSystem------------------------");
@@ -211,6 +212,25 @@ public class Robot {
         telemetry.addData("Loop Time (ms)", loopTime);
         telemetry.addData("Loop Rate (Hz)", 1000 / loopTime); // Approximate
 
+    } //end of teleTelemetry
+
+    public void teleTelemetry() {
+        double loopTime = loopTimer.milliseconds();
+        telemetry.addLine("Coach pay Attention(kuwar)");
+        telemetry.addLine("--------------------------SubSystem------------------------");
+        //telemetry.addData("heading-w-follower", follower.getPose().getHeading());
+        //telemetry.addData("state", state);
+        //telemetry.addData("shooter 1 vel with ticks", shooterSubsystem.shooter1.getVelocity());
+
+    } //end of teleTelemetry
+
+    public void autoTelemetry() {
+        double loopTime = loopTimer.milliseconds();
+        telemetry.addLine("--------------------------SubSystem------------------------");
+        //telemetry.addData("heading-w-follower", follower.getPose().getHeading());
+        //telemetry.addData("state", state);
+        telemetry.addLine("--------------------------LOOP TIMINGS------------------------");
+        telemetry.addData("Loop Rate (Hz)", 1000 / loopTime); // Approximate
     } //end of teleTelemetry
 
     public Alliance getAlliance(){
