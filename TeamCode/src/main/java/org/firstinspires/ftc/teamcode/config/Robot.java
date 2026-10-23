@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.config;
 
 // import static org.firstinspires.ftc.teamcode.config.pedro.Tuning.follower;
 
+import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.button.Trigger;
+import com.seattlesolvers.solverslib.controller.PDController;
+import com.seattlesolvers.solverslib.controller.PIDFController;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
@@ -19,6 +22,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.teamcode.config.Commands.Command.IntakeCommand;
+import org.firstinspires.ftc.teamcode.config.Commands.Command.SetShooterVelocityCommand;
 import org.firstinspires.ftc.teamcode.config.util.*;
 import org.firstinspires.ftc.teamcode.config.Subsystem.*;
 
@@ -30,6 +34,7 @@ public class Robot {
     private final Timer loop = new Timer();
     private Follower follower;
     public Alliance alliance;
+    public States state = States.MANUAL;
     public CommandScheduler cs = CommandScheduler.getInstance();
     public ElapsedTime loopTimer;
     protected GamepadEx driver;
@@ -48,6 +53,7 @@ public class Robot {
     public LimeLightSubsystem limeLightSubsystem;
     private final Telemetry telemetry;
 
+    private final PDController pd = new PDController(0.3,  0.024);
 
 
 
@@ -125,18 +131,8 @@ public class Robot {
      */
     public void tPeriodic() {
         teleTelemetry();
-
-        //every 5 milliseconds clear the cache
-        if (loop.milliseconds() % 5 == 0) {
-            for (LynxModule hub : allHubs) {
-                hub.clearBulkCache();
-            } // end of for
-        } // end of if
-
-        // logic for auto tracking
-        // double turn;
-        // telemetry.addData("turnh",turn);
-        driveSubsystem.drive(-driver.getLeftX(), -driver.getLeftY(),driver.getRightX());
+        bulk();
+        driveSubsystem.drive(-driver.getLeftX(), -driver.getLeftY(),rot());
         telemetry.update();
         cs.run();
     } //end of periodic
@@ -149,6 +145,25 @@ public class Robot {
         //limeLightSubsystem.lStart();
     } // end of tStart
 
+    public void bulk(){
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
+    }
+
+    public double rot(){
+        double turn = driver.getRightX();
+        if (state == States.LOCKED && targetVisible) {
+            turn = Range.clip(
+                    // ll sub is just place holdfer
+                    pd.calculate(limeLightSubsystem.getHorizontalErrorTag(), 0),
+                    -3,
+                    3            );
+        } else {
+            pd.reset();
+        }
+        return turn;
+    }
 
 
     /**
@@ -183,6 +198,11 @@ public class Robot {
                 new SetShooterVelocityCommand(shooterSubsystem, 2800),
                 new SetShooterVelocityCommand(shooterSubsystem, 0)
         );
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenActive(new InstantCommand(() -> {
+                    state = state == States.MANUAL ? States.LOCKED : States.MANUAL;
+                    pd.reset();
+                }));
 
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(new InstantCommand(driveSubsystem::resetAngle));
