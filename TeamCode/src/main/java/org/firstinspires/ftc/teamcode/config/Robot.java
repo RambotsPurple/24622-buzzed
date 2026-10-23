@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.config;
 
-import static org.firstinspires.ftc.teamcode.config.pedro.Tuning.follower;
+// import static org.firstinspires.ftc.teamcode.config.pedro.Tuning.follower;
 
-import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.button.Trigger;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.math.Pose;
 import com.pedropathing.utils.Timer;
 import com.qualcomm.hardware.lynx.LynxModule;
 
@@ -21,9 +18,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import org.firstinspires.ftc.teamcode.config.Commands.Command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.config.util.*;
 import org.firstinspires.ftc.teamcode.config.Subsystem.*;
-import org.firstinspires.ftc.teamcode.config.pedro.Constants;
 
 import java.util.List;
 
@@ -38,8 +35,7 @@ public class Robot {
     protected GamepadEx driver;
     protected GamepadEx oper;
 
-    //public IndexerSubsystem indexerSubsystem;
-
+    public TransferSubsytem transferSubsytem;
     // Instantiate subsystems
     public ShooterSubsystem shooterSubsystem;
     public IntakeSubsystem intakeSubsystem;
@@ -72,6 +68,7 @@ public class Robot {
     public Robot(HardwareMap h, Alliance alliance, Gamepad driver,Gamepad oper, Telemetry telemetry) {
         shooterSubsystem = new ShooterSubsystem(h,telemetry);
         intakeSubsystem = new IntakeSubsystem(h);
+        transferSubsytem = new TransferSubsytem(h);
         limeLightSubsystem = new LimeLightSubsystem(h,alliance);
         driveSubsystem  = new DriveSubsystem(h);
 
@@ -170,10 +167,12 @@ public class Robot {
          * B - deactivate shooter
          */
 
+        // code code just need to make the method @mitrha
         new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
                 .whenActive(new IntakeCommand(intakeSubsystem, 1))
                 .whenInactive(new IntakeCommand(intakeSubsystem, 0));
 
+        // to be changed
         oper.getGamepadButton(GamepadKeys.Button.A).toggleWhenActive(
                 new SetShooterVelocityCommand(shooterSubsystem, 5600),
                 new SetShooterVelocityCommand(shooterSubsystem, 0)
