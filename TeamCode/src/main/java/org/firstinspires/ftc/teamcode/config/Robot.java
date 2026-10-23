@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.teamcode.config.Commands.Command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.config.Commands.Command.SetShooterVelocityCommand;
+import org.firstinspires.ftc.teamcode.config.Commands.Command.ShooterCommand;
 import org.firstinspires.ftc.teamcode.config.Commands.CommandGroups.OutputCommandGroup;
 import org.firstinspires.ftc.teamcode.config.util.*;
 import org.firstinspires.ftc.teamcode.config.Subsystem.*;
@@ -186,22 +187,37 @@ public class Robot {
 
         // code code just need to make the method @mitrha
         new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
-                .whenActive(new IntakeCommand(intakeSubsystem,.5))
+                .whenActive(new IntakeCommand(intakeSubsystem,1))
+                .whenInactive(new IntakeCommand(intakeSubsystem, 0));
+
+        new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
+                .whenActive(new IntakeCommand(intakeSubsystem,-1))
                 .whenInactive(new IntakeCommand(intakeSubsystem, 0));
 
         // to be changed
-        oper.getGamepadButton(GamepadKeys.Button.A).toggleWhenActive(
-                new SetShooterVelocityCommand(shooterSubsystem, 1000),
-                new SetShooterVelocityCommand(shooterSubsystem, 0)
-        );
 
         oper.getGamepadButton(GamepadKeys.Button.X).toggleWhenActive(
-                new SetShooterVelocityCommand(shooterSubsystem, 2400),
                 new SetShooterVelocityCommand(shooterSubsystem, 0)
         );
         new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
-                .whenActive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,.5))
+                .whenActive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,1))
                 .whenInactive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,0));
+
+        new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
+                .whenActive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,-0.3))
+                .whenInactive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,0));
+
+        oper.getGamepadButton((GamepadKeys.Button.A))
+                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 5000),new SetShooterVelocityCommand(shooterSubsystem, 0));
+
+        oper.getGamepadButton((GamepadKeys.Button.B))
+                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 4000),new SetShooterVelocityCommand(shooterSubsystem, 0));
+
+//        oper.getGamepadButton((GamepadKeys.Button.A))
+//                .toggleWhenActive(new ShooterCommand(shooterSubsystem, 1),new ShooterCommand(shooterSubsystem, 0));
+//
+//        oper.getGamepadButton((GamepadKeys.Button.B))
+//                .toggleWhenActive(new ShooterCommand(shooterSubsystem, .8),new ShooterCommand(shooterSubsystem, 0));
 
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenActive(new InstantCommand(() -> {
