@@ -99,6 +99,7 @@ public class Robot {
      */
 
     public Robot(HardwareMap h, Alliance alliance, Telemetry telemetry) {
+        transferSubsytem = new TransferSubsytem(h);
         shooterSubsystem = new ShooterSubsystem(h, telemetry);
         intakeSubsystem = new IntakeSubsystem(h);
         limeLightSubsystem = new LimeLightSubsystem(h, alliance);
