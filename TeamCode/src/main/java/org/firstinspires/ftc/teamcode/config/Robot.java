@@ -76,7 +76,7 @@ public class Robot {
         shooterSubsystem = new ShooterSubsystem(h,telemetry);
         intakeSubsystem = new IntakeSubsystem(h);
         transferSubsystem = new TransferSubsystem(h);
-        limeLightSubsystem = new LimeLightSubsystem(h,alliance);
+//        limeLightSubsystem = new LimeLightSubsystem(h,alliance);
         driveSubsystem  = new DriveSubsystem(h);
 
         this.alliance = alliance;
@@ -109,7 +109,7 @@ public class Robot {
         transferSubsystem = new TransferSubsystem(h);
         shooterSubsystem = new ShooterSubsystem(h, telemetry);
         intakeSubsystem = new IntakeSubsystem(h);
-        limeLightSubsystem = new LimeLightSubsystem(h, alliance);
+//        limeLightSubsystem = new LimeLightSubsystem(h, alliance);
         loopTimer = new ElapsedTime();
         driveSubsystem = new DriveSubsystem(h);
         this.alliance = alliance;
@@ -230,11 +230,11 @@ public class Robot {
 
         telemetry.addData("Alliance", alliance);
         telemetry.addData("Drive state", state);
-        Double aimError = limeLightSubsystem.getVisibleTagHorizontalError();
-        telemetry.addData("Tag visible", aimError != null);
-        if (aimError != null) {
-            telemetry.addData("Aim error (deg)", "%.1f", aimError);
-        }
+//        Double aimError = limeLightSubsystem.getVisibleTagHorizontalError();
+//        telemetry.addData("Tag visible", aimError != null);
+//        if (aimError != null) {
+//            telemetry.addData("Aim error (deg)", "%.1f", aimError);
+//        }
         telemetry.addData("Shooter RPM (actual / target)", "%.0f / %.0f",
                 shooterSubsystem.getVelocity(), shooterSubsystem.getTarget());
         telemetry.addData("Shooter power", "%.2f", shooterSubsystem.shooter1.getPower());

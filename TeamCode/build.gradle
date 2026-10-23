@@ -26,6 +26,6 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation "org.solverslib:core:0.3.5" // core
+    implementation "org.solverslib:core:0.3.6" // core
 
 }

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.config.Robot;
 import org.firstinspires.ftc.teamcode.config.util.Alliance;
 @TeleOp(name = "blue")
-public class blueTELE extends OpMode {
+public class  blueTELE extends OpMode {
     Robot robot;
 
     @Override
