@@ -130,11 +130,11 @@ public class Robot {
      * loops periodically during teleOp
      */
     public void tPeriodic() {
-        teleTelemetry();
         bulk();
         driveSubsystem.drive(-driver.getLeftX(), -driver.getLeftY(),rot());
-        telemetry.update();
         cs.run();
+        teleTelemetry();
+        telemetry.update();
     } //end of periodic
 
     /**
@@ -216,43 +216,29 @@ public class Robot {
      * Telemetry data for teleOp
      */
     public void teleTelemetryDebug() {
-        double loopTime = loopTimer.milliseconds();
-        telemetry.addLine("Coach pay Attention(kuwar)");
-        // telemetry.addData("ticks", shooterSubsystem.getCurrentPosition());
-        telemetry.addData("alliance",alliance);
-        telemetry.addLine("--------------------------SubSystem------------------------");
-        //telemetry.addData("horizontal",limeLightSubsystem.getHorizontalError());
-        //telemetry.addData("dist",limeLightSubsystem.getDist());
-        ////telemetry.addData("input", shooterSubsystem.shooter1.getPower());
-        //telemetry.addData("heading-w-follower", follower.getPose().getHeading());
-        //telemetry.addData("state", state);
-        //telemetry.addData("shooter 1 vel with ticks", shooterSubsystem.shooter1.getVelocity());
-        telemetry.addLine("--------------------------LOOP TIMINGS------------------------");
-        loopTimer.reset();
-        telemetry.addData("Loop Time (ms)", loopTime);
-        telemetry.addData("Loop Rate (Hz)", 1000 / loopTime); // Approximate
-
-    } //end of teleTelemetry
+        teleTelemetry();
+    }
 
     public void teleTelemetry() {
         double loopTime = loopTimer.milliseconds();
-        telemetry.addLine("Coach pay Attention(kuwar)");
-        telemetry.addLine("--------------------------SubSystem------------------------");
-        //telemetry.addData("heading-w-follower", follower.getPose().getHeading());
-        //telemetry.addData("state", state);
-        //telemetry.addData("shooter 1 vel with ticks", shooterSubsystem.shooter1.getVelocity());
+        loopTimer.reset();
 
-    } //end of teleTelemetry
+        telemetry.addData("Alliance", alliance);
+        telemetry.addData("Drive state", state);
+        Double aimError = limeLightSubsystem.getVisibleTagHorizontalError();
+        telemetry.addData("Tag visible", aimError != null);
+        if (aimError != null) {
+            telemetry.addData("Aim error (deg)", "%.1f", aimError);
+        }
+        telemetry.addData("Shooter RPM (actual / target)", "%.0f / %.0f",
+                shooterSubsystem.getVelocity(), shooterSubsystem.getTarget());
+        telemetry.addData("Shooter power", "%.2f", shooterSubsystem.shooter1.getPower());
+        telemetry.addData("Loop (ms)", "%.1f", loopTime);
+    }
 
     public void autoTelemetry() {
-        double loopTime = loopTimer.milliseconds();
-        telemetry.addLine("--------------------------SubSystem------------------------");
-        //telemetry.addData("heading-w-follower", follower.getPose().getHeading());
-        //telemetry.addData("state", state);
-        telemetry.addLine("--------------------------LOOP TIMINGS------------------------");
-        telemetry.addData("Loop Rate (Hz)", 1000 / loopTime); // Approximate
-    } //end of teleTelemetry
-
+        teleTelemetry();
+    }
     public Alliance getAlliance(){
         return this.alliance;
     }

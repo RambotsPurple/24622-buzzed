@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.config.Subsystem;
 import static org.firstinspires.ftc.teamcode.config.util.Pipeline.COLOR;
 
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.*;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -48,6 +49,20 @@ public class LimeLightSubsystem {
         return tagDist;
 
     }//end getDist
+
+    // Null means no valid tag measurement is available.
+    public Double getVisibleTagHorizontalError() {
+        LLResult result = limelight.getLatestResult();
+        if (result == null || !result.isValid()) {
+            return null;
+        }
+        for (FiducialResult tag : result.getFiducialResults()) {
+            if (tag != null) {
+                return tag.getTargetXDegrees();
+            }
+        }
+        return null;
+    }
 
     public double getHorizontalErrorTag(){
         FiducialResult tag = null;
