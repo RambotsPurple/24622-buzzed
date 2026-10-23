@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.teamcode.config.Commands.Command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.config.Commands.Command.SetShooterVelocityCommand;
+import org.firstinspires.ftc.teamcode.config.Commands.CommandGroups.OutputCommandGroup;
 import org.firstinspires.ftc.teamcode.config.util.*;
 import org.firstinspires.ftc.teamcode.config.Subsystem.*;
 
@@ -40,7 +41,7 @@ public class Robot {
     protected GamepadEx driver;
     protected GamepadEx oper;
 
-    public TransferSubsytem transferSubsytem;
+    public TransferSubsystem transferSubsystem;
     // Instantiate subsystems
     public ShooterSubsystem shooterSubsystem;
     public IntakeSubsystem intakeSubsystem;
@@ -74,7 +75,7 @@ public class Robot {
     public Robot(HardwareMap h, Alliance alliance, Gamepad driver,Gamepad oper, Telemetry telemetry) {
         shooterSubsystem = new ShooterSubsystem(h,telemetry);
         intakeSubsystem = new IntakeSubsystem(h);
-        transferSubsytem = new TransferSubsytem(h);
+        transferSubsystem = new TransferSubsystem(h);
         limeLightSubsystem = new LimeLightSubsystem(h,alliance);
         driveSubsystem  = new DriveSubsystem(h);
 
@@ -91,7 +92,7 @@ public class Robot {
 
         loop.reset();
         cs.registerSubsystem(
-                shooterSubsystem, intakeSubsystem
+                shooterSubsystem, intakeSubsystem, transferSubsystem
         );
 
     } //end of teleop constructor
@@ -105,7 +106,7 @@ public class Robot {
      */
 
     public Robot(HardwareMap h, Alliance alliance, Telemetry telemetry) {
-        transferSubsytem = new TransferSubsytem(h);
+        transferSubsystem = new TransferSubsystem(h);
         shooterSubsystem = new ShooterSubsystem(h, telemetry);
         intakeSubsystem = new IntakeSubsystem(h);
         limeLightSubsystem = new LimeLightSubsystem(h, alliance);
@@ -121,7 +122,7 @@ public class Robot {
         }//end of for
 
         cs.registerSubsystem(
-                shooterSubsystem, intakeSubsystem
+                shooterSubsystem, intakeSubsystem, transferSubsystem
         ); // end of cs
 
     }//end of auto constructor
@@ -153,15 +154,15 @@ public class Robot {
 
     public double rot(){
         double turn = driver.getRightX();
-        if (state == States.LOCKED && targetVisible) {
-            turn = Range.clip(
-                    // ll sub is just place holdfer
-                    pd.calculate(limeLightSubsystem.getHorizontalErrorTag(), 0),
-                    -3,
-                    3            );
-        } else {
-            pd.reset();
-        }
+        //if (state == States.LOCKED && targetVisible) {
+        //    turn = Range.clip(
+        //            // ll sub is just place holdfer
+        //            pd.calculate(limeLightSubsystem.getHorizontalErrorTag(), 0),
+        //            -3,
+        //            3            );
+        //} else {
+        //    pd.reset();
+        //}
         return turn;
     }
 
@@ -185,19 +186,23 @@ public class Robot {
 
         // code code just need to make the method @mitrha
         new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
-                .whenActive(new IntakeCommand(intakeSubsystem, 1))
+                .whenActive(new IntakeCommand(intakeSubsystem,.5))
                 .whenInactive(new IntakeCommand(intakeSubsystem, 0));
 
         // to be changed
         oper.getGamepadButton(GamepadKeys.Button.A).toggleWhenActive(
-                new SetShooterVelocityCommand(shooterSubsystem, 5600),
+                new SetShooterVelocityCommand(shooterSubsystem, 1000),
                 new SetShooterVelocityCommand(shooterSubsystem, 0)
         );
 
         oper.getGamepadButton(GamepadKeys.Button.X).toggleWhenActive(
-                new SetShooterVelocityCommand(shooterSubsystem, 2800),
+                new SetShooterVelocityCommand(shooterSubsystem, 2400),
                 new SetShooterVelocityCommand(shooterSubsystem, 0)
         );
+        new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0)
+                .whenActive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,.5))
+                .whenInactive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,0));
+
         driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenActive(new InstantCommand(() -> {
                     state = state == States.MANUAL ? States.LOCKED : States.MANUAL;

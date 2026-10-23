@@ -17,6 +17,13 @@ public class IntakeSubsystem extends SubsystemBase {
 //    @todo
 //    make method to intake
 //    make method for solo roller
+public void run(double power){
+    intake.setPower(power);
+}
+
+    public void stop(){
+        intake .setPower(0);
+    }
 
 
 }

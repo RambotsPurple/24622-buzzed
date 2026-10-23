@@ -1,6 +1,22 @@
 package org.firstinspires.ftc.teamcode.config.Commands.Command;
 
-import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.command.InstantCommand;
 
-public class IntakeCommand extends SubsystemBase {
+import org.firstinspires.ftc.teamcode.config.Subsystem.IntakeSubsystem;
+
+public class IntakeCommand extends InstantCommand {
+    private final IntakeSubsystem intakeSubsystem;
+    private double pow;
+    public IntakeCommand(IntakeSubsystem sub, double power){
+        intakeSubsystem = sub;
+        pow = power;
+        addRequirements(intakeSubsystem);
+    }
+
+    @Override
+    public void initialize() {
+        intakeSubsystem.run(pow);
+    }
+
+
 }
