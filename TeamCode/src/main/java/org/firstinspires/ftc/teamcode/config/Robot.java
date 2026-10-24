@@ -226,8 +226,7 @@ public class Robot {
                 .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 5000),new SetShooterVelocityCommand(shooterSubsystem, 0));
 
         oper.getGamepadButton((GamepadKeys.Button.B))
-                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 4000),new SetShooterVelocityCommand(shooterSubsystem, 0));
-
+                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 2000),new SetShooterVelocityCommand(shooterSubsystem, 0));
 //        oper.getGamepadButton((GamepadKeys.Button.A))
 //                .toggleWhenActive(new ShooterCommand(shooterSubsystem, 1),new ShooterCommand(shooterSubsystem, 0));
 //

@@ -11,6 +11,11 @@ import org.firstinspires.ftc.teamcode.config.util.Alliance;
 public class eight {
     public  Alliance a;
     private  PoseFactory poseFactory ;
+
+
+    private final Pose start;
+    private final Pose toballs ;
+    private final Pose toballsControl1;
     public eight(Alliance alliance){
         a = alliance;
         if (a == Alliance.RED) {
@@ -18,11 +23,10 @@ public class eight {
         } else {
              poseFactory = PoseFactory.degrees();
         }
+        start = poseFactory.of(56, 8, 90);
+        toballs = poseFactory.of(10.9676, 11.0294, 260);
+        toballsControl1 = poseFactory.of(56.664, 16.4737, 0);
     }
-
-    private final Pose start = poseFactory.of(56, 8, 90);
-    private final Pose toballs = poseFactory.of(10.9676, 11.0294, 260);
-    private final Pose toballsControl1 = poseFactory.of(56.664, 16.4737, 0);
     private final Pose tostartStart = poseFactory.of(10.9676, 11.0294, 260);
     private final Pose tostart = poseFactory.of(56, 9, 90);
     private final Pose tostartControl1 = poseFactory.of(56.7745, 15.9434, 0);

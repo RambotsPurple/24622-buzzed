@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
@@ -27,10 +28,16 @@ public class straightRed extends CommandOpMode {
         robot = new Robot(hardwareMap, Alliance.RED,telemetry);
         path = new straight(Alliance.RED);
         schedule(
+                new RunCommand(() -> {
+                    if (System.currentTimeMillis() % 20 < 5) {
+                        robot.bulk();
+                    }
+                }),
                 new SequentialCommandGroup(
-                    new FollowPathCommand(robot.getFollower(), path.path1())
-                )
+                        new FollowPathCommand(robot.getFollower(), path.park())
 
+
+                )
 
         );
 

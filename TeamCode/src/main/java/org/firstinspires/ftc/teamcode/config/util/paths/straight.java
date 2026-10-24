@@ -19,10 +19,11 @@ public class straight {
         }
     }
 
-    private final Pose start = poseFactory.of(56, 8, 90);
-    private final Pose path1 = poseFactory.of(8.6802, 94.2565, 90);
+    private final Pose start = poseFactory.of(9, 33, 90);
+    private final Pose park = poseFactory.of(8.6, 94, 180);
+    private final Pose parkControl1 = poseFactory.of(40, 8, 0);
 
-    public Path path1() {
-        return Paths.line(start, path1).constant(path1);
+    public Path park() {
+        return Paths.curve(start, parkControl1, park).linear(start, park);
     }
 }

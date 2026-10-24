@@ -33,7 +33,7 @@ public class blue4  extends CommandOpMode {
                     }
                 }),
                 new SequentialCommandGroup(
-                    new SetShooterVelocityCommand(robot.shooterSubsystem,5000),
+                    new SetShooterVelocityCommand(robot.shooterSubsystem,3200),
                     new WaitCommand(3000),
                     new ParallelCommandGroup(
                             new IntakeCommand(robot.intakeSubsystem,1),
@@ -51,7 +51,7 @@ public class blue4  extends CommandOpMode {
                     new WaitCommand(1500),
                     new IntakeCommand(robot.intakeSubsystem,0),
                     new FollowPathCommand(robot.getFollower(),path.tostart()),
-                    new SetShooterVelocityCommand(robot.shooterSubsystem,5000),
+                    new SetShooterVelocityCommand(robot.shooterSubsystem,3200),
                     new WaitCommand(3000),
                     new ParallelCommandGroup(
                             new IntakeCommand(robot.intakeSubsystem,1),
