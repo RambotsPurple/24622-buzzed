@@ -18,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double target = 0;
     private final DcMotorEx shooter1;
     // Tune these gains for RPM feedback and a normalized power output.
-    private final PIDFController pidf = new PIDFController(0.004, 0.000, 0.004, 0.003);
+    private final PIDFController pidf = new PIDFController(0.4, 0.000, 0.004, 0.3);
     private boolean velocityControl = true;
 
 
