@@ -15,10 +15,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Motor RPM; matches the 28 ticks/revolution used in rpmIncra.
     private static final double TICKS_PER_REV = 28.0;
-    public double target = 0;
-    public DcMotorEx shooter1;
+    private double target = 0;
+    private final DcMotorEx shooter1;
     // Tune these gains for RPM feedback and a normalized power output.
-    private final PIDFController pidf = new PIDFController(0.3, 0.001, 0.024, 0.002);
+    private final PIDFController pidf = new PIDFController(0.004, 0.000, 0.004, 0.003);
     private boolean velocityControl = true;
 
 

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.config;
 
 // import static org.firstinspires.ftc.teamcode.config.pedro.Tuning.follower;
 
+import com.pedropathing.drivetrain.DrivePowers;
+import com.pedropathing.follower.ManualDrive;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
@@ -25,6 +27,7 @@ import org.firstinspires.ftc.teamcode.config.Commands.Command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.config.Commands.Command.SetShooterVelocityCommand;
 import org.firstinspires.ftc.teamcode.config.Commands.Command.ShooterCommand;
 import org.firstinspires.ftc.teamcode.config.Commands.CommandGroups.OutputCommandGroup;
+import org.firstinspires.ftc.teamcode.config.pedro.Constants;
 import org.firstinspires.ftc.teamcode.config.util.*;
 import org.firstinspires.ftc.teamcode.config.Subsystem.*;
 
@@ -79,7 +82,7 @@ public class Robot {
         transferSubsystem = new TransferSubsystem(h);
 //        limeLightSubsystem = new LimeLightSubsystem(h,alliance);
         driveSubsystem  = new DriveSubsystem(h);
-
+        follower =  Constants.create(h);
         this.alliance = alliance;
         this.driver = new GamepadEx(driver);
         this.oper = new GamepadEx(oper);
@@ -133,11 +136,23 @@ public class Robot {
      */
     public void tPeriodic() {
         bulk();
-        driveSubsystem.drive(-driver.getLeftX(), -driver.getLeftY(),rot());
-        cs.run();
+        follower.manual(powers());
+        follower.update();
+        //driveSubsystem.drive(-driver.getLeftX(), -driver.getLeftY(),rot());
         teleTelemetry();
         telemetry.update();
+        cs.run();
+
     } //end of periodic
+
+    public DrivePowers powers(){
+        return
+                ManualDrive.fieldCentric(
+                        driver.getLeftY(), -driver.getLeftX(),
+                rot(),
+                follower.pose().heading()
+        );
+    }
 
     /**
      * Run on start of teleOp
@@ -204,7 +219,7 @@ public class Robot {
                 .whenInactive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,0));
 
         new Trigger(() -> oper.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0)
-                .whenActive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,-0.3))
+                .whenActive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,-0.8))
                 .whenInactive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,0));
 
         oper.getGamepadButton((GamepadKeys.Button.A))
@@ -226,6 +241,7 @@ public class Robot {
                 }));
 
 
+        //driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(new InstantCommand(driveSubsystem::resetAngle));
         driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(new InstantCommand(driveSubsystem::resetAngle));
 
 
@@ -246,14 +262,13 @@ public class Robot {
 
         telemetry.addData("Alliance", alliance);
         telemetry.addData("Drive state", state);
-//        Double aimError = limeLightSubsystem.getVisibleTagHorizontalError();
-//        telemetry.addData("Tag visible", aimError != null);
-//        if (aimError != null) {
-//            telemetry.addData("Aim error (deg)", "%.1f", aimError);
-//        }
+        //Double aimError = limeLightSubsystem.getVisibleTagHorizontalError();
+        //telemetry.addData("Tag visible", aimError != null);
+        //if (aimError != null) {
+        //    telemetry.addData("Aim error (deg)", "%.1f", aimError);
+        //}
         telemetry.addData("Shooter RPM (actual / target)", "%.0f / %.0f",
                 shooterSubsystem.getVelocity(), shooterSubsystem.getTarget());
-        telemetry.addData("Shooter power", "%.2f", shooterSubsystem.shooter1.getPower());
         telemetry.addData("Loop (ms)", "%.1f", loopTime);
     }
 
