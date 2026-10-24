@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.auto;
 
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
@@ -15,20 +16,27 @@ import org.firstinspires.ftc.teamcode.config.Commands.Command.TransferCommand;
 import org.firstinspires.ftc.teamcode.config.Robot;
 import org.firstinspires.ftc.teamcode.config.util.Alliance;
 import org.firstinspires.ftc.teamcode.config.util.paths.eight;
+import org.firstinspires.ftc.teamcode.config.util.paths.eightRed;
 
 @Autonomous(name ="red4")
 public class red4  extends CommandOpMode {
     Robot robot;
-    eight path;
+    eightRed path;
 
     @Override
     public void initialize() {
         robot = new Robot(hardwareMap, Alliance.RED,telemetry);
-        path = new eight(Alliance.RED);
-        schedule(
+        path = new eightRed();
+        robot.getFollower().setPose(new Pose(56, 8, 90));
+                schedule(
                 new RunCommand(() -> {
                     if (System.currentTimeMillis() % 20 < 5) {
                         robot.bulk();
+                        robot.getFollower().update();
+                        telemetry.addData("pose:",robot.getFollower().pose());
+                        telemetry.addData("closest pose:",robot.getFollower().closestPose());
+                        telemetry.addData("closest pose algo:",robot.getFollower().algorithm().closestPose());
+                        telemetry.update();
                     }
                 }),
                 new SequentialCommandGroup(
@@ -50,7 +58,7 @@ public class red4  extends CommandOpMode {
                         new WaitCommand(1500),
                         new IntakeCommand(robot.intakeSubsystem,0),
                         new FollowPathCommand(robot.getFollower(),path.tostart()),
-                        new SetShooterVelocityCommand(robot.shooterSubsystem,3200),
+                        new SetShooterVelocityCommand(robot.shooterSubsystem,2900),
                         new WaitCommand(3000),
                         new ParallelCommandGroup(
                                 new IntakeCommand(robot.intakeSubsystem,1),

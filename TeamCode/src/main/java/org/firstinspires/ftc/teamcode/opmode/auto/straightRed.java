@@ -17,26 +17,26 @@ import org.firstinspires.ftc.teamcode.config.Robot;
 import org.firstinspires.ftc.teamcode.config.util.Alliance;
 import org.firstinspires.ftc.teamcode.config.util.paths.eight;
 import org.firstinspires.ftc.teamcode.config.util.paths.straight;
+import org.firstinspires.ftc.teamcode.config.util.paths.straightRED;
 
 @Autonomous(name ="straightRed")
 public class straightRed extends CommandOpMode {
     Robot robot;
-    straight path;
+    straightRED path;
 
     @Override
     public void initialize() {
         robot = new Robot(hardwareMap, Alliance.RED,telemetry);
-        path = new straight(Alliance.RED);
+        path = new straightRED();
         schedule(
                 new RunCommand(() -> {
                     if (System.currentTimeMillis() % 20 < 5) {
                         robot.bulk();
+                        robot.getFollower().update();
                     }
                 }),
                 new SequentialCommandGroup(
                         new FollowPathCommand(robot.getFollower(), path.park())
-
-
                 )
 
         );

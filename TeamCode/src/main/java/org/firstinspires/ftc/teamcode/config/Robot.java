@@ -32,6 +32,7 @@ import org.firstinspires.ftc.teamcode.config.util.*;
 import org.firstinspires.ftc.teamcode.config.Subsystem.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class Robot {
 
@@ -110,6 +111,7 @@ public class Robot {
      */
 
     public Robot(HardwareMap h, Alliance alliance, Telemetry telemetry) {
+        follower =  Constants.create(h);
         transferSubsystem = new TransferSubsystem(h);
         shooterSubsystem = new ShooterSubsystem(h, telemetry);
         intakeSubsystem = new IntakeSubsystem(h);
@@ -146,12 +148,19 @@ public class Robot {
     } //end of periodic
 
     public DrivePowers powers(){
+//        return
+//                ManualDrive.fieldCentric(
+//                        driver.getLeftY(), -driver.getLeftX(),
+//                rot(),
+//                follower.pose().heading()
+//        );
+
         return
                 ManualDrive.fieldCentric(
-                        driver.getLeftY(), -driver.getLeftX(),
-                rot(),
-                follower.pose().heading()
-        );
+                        -driver.getLeftY(), -driver.getLeftX(),
+                        rot(),
+                        follower.pose().heading()
+                );
     }
 
     /**
@@ -181,7 +190,12 @@ public class Robot {
         //}
         return turn;
     }
-
+    public void debug(){
+        Map<String, Object> drivetrainLog = follower.debug().drivetrain();
+        Map<String, Object> algorithmLog = follower.debug().algorithm();
+        Map<String, Object> localizerLog = follower.debug().localizer();
+        Map<String, Object> followStateLog = follower.debug().followState();
+    }
 
     /**
      * Sets up listeners at the start of teleOp
@@ -223,10 +237,10 @@ public class Robot {
                 .whenInactive(new OutputCommandGroup(intakeSubsystem,transferSubsystem,0));
 
         oper.getGamepadButton((GamepadKeys.Button.A))
-                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 5000),new SetShooterVelocityCommand(shooterSubsystem, 0));
+                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 4200),new SetShooterVelocityCommand(shooterSubsystem, 0));
 
         oper.getGamepadButton((GamepadKeys.Button.B))
-                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 2000),new SetShooterVelocityCommand(shooterSubsystem, 0));
+                .toggleWhenActive(new SetShooterVelocityCommand(shooterSubsystem, 2600),new SetShooterVelocityCommand(shooterSubsystem, 0));
 //        oper.getGamepadButton((GamepadKeys.Button.A))
 //                .toggleWhenActive(new ShooterCommand(shooterSubsystem, 1),new ShooterCommand(shooterSubsystem, 0));
 //
@@ -274,7 +288,7 @@ public class Robot {
     }
 
     public void autoTelemetry() {
-        teleTelemetry();
+
     }
     public Alliance getAlliance(){
         return this.alliance;
