@@ -242,8 +242,10 @@ public class Robot {
 
 
         //driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(new InstantCommand(driveSubsystem::resetAngle));
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(new InstantCommand(driveSubsystem::resetAngle));
-
+//        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenActive(new InstantCommand(driveSubsystem::resetAngle));
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenActive(
+                new InstantCommand(()-> follower.setPose(follower.pose().withHeading(0)))
+        );
 
     } //end of tele method
 
