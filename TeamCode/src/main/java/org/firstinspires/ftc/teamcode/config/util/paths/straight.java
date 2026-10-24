@@ -13,9 +13,9 @@ public class straight {
     public straight(Alliance alliance){
         a = alliance;
         if (a == Alliance.RED) {
-            PoseFactory poseFactory = PoseFactory.degrees().mirrorX(70.75);
+             poseFactory = PoseFactory.degrees().mirrorX(70.75);
         } else {
-            PoseFactory poseFactory = PoseFactory.degrees();
+             poseFactory = PoseFactory.degrees();
         }
     }
 

@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.config.util.paths;
+import static com.pedropathing.api.Paths.*;
 
 import com.pedropathing.api.Paths;
 import com.pedropathing.api.PoseFactory;
@@ -9,13 +10,13 @@ import org.firstinspires.ftc.teamcode.config.util.Alliance;
 
 public class eight {
     public  Alliance a;
-    private  PoseFactory poseFactory;
+    private  PoseFactory poseFactory ;
     public eight(Alliance alliance){
         a = alliance;
         if (a == Alliance.RED) {
-            PoseFactory poseFactory = PoseFactory.degrees().mirrorX(70.75);
+             poseFactory = PoseFactory.degrees().mirrorX(70.75);
         } else {
-            PoseFactory poseFactory = PoseFactory.degrees();
+             poseFactory = PoseFactory.degrees();
         }
     }
 
