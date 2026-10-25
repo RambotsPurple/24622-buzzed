@@ -6,16 +6,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 public class TransferSubsystem extends SubsystemBase {
+    private final DcMotorEx transfer;
 
-    private DcMotorEx transfer;
-
-    public TransferSubsystem(HardwareMap h){
-        transfer = h.get(DcMotorEx.class,"transfer");
+    public TransferSubsystem(HardwareMap hardwareMap) {
+        transfer = hardwareMap.get(DcMotorEx.class, "transfer");
         transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    public void setPower(double p) {
-        transfer.setPower(p);
-    } // setPositon
 
-
+    public void setPower(double power) {
+        transfer.setPower(power);
+    }
 }

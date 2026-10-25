@@ -12,7 +12,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.config.Subsystem.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.config.Subsystem.LimeLightSubsystem;
-import org.firstinspires.ftc.teamcode.config.util.Alliance;
+import org.firstinspires.ftc.teamcode.config.util.enums.Alliance;
 
 import java.util.List;
 

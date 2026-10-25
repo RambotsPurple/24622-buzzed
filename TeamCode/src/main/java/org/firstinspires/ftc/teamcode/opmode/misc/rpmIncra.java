@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmode.misc;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,12 +21,14 @@ public class rpmIncra extends OpMode {
         s =hardwareMap.get(DcMotorEx.class, "s");
         toggle = false;
         s.setDirection(DcMotor.Direction.REVERSE);
+        s.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         s.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         p = new GamepadEx(gamepad1);
     }
 
     @Override
     public void loop() {
+        p.readButtons();
 
         if(p.wasJustPressed(GamepadKeys.Button.A)){
             if(!toggle){
@@ -43,9 +43,19 @@ public class rpmIncra extends OpMode {
         if(p.wasJustPressed(GamepadKeys.Button.B)){
             targetRPM +=100;
             if(targetRPM >6000) targetRPM = 100;
-            s.setVelocity((targetRPM/60.0)*ticksPerRev);
+            if (toggle) {
+                s.setVelocity((targetRPM/60.0)*ticksPerRev);
+            }
         }
-        telemetry.addData("rpm:",(s.getVelocity()/60)*ticksPerRev);
+        telemetry.addData("Target RPM", targetRPM);
+        telemetry.addData("Enabled", toggle);
+        telemetry.addData("rpm:", s.getVelocity() * 60.0 / ticksPerRev);
         telemetry.update();
+    }
+
+    @Override
+    public void stop() {
+        s.setVelocity(0);
+        s.setPower(0);
     }
 }

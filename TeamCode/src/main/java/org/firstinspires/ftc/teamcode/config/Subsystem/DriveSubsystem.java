@@ -11,14 +11,12 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 /**
- * backup drive
+ * Standalone backup drive for diagnostic OpModes. Do not instantiate alongside Pedro:
+ * this constructor changes the configuration of the same four drive motors.
  */
 public class DriveSubsystem{
-    private DcMotorEx frontLeft, frontRight, rearLeft, rearRight;
-    public IMU imu;
-    private double heading;
-    private double lastAngles;
-    private double angles;
+    private final DcMotorEx frontLeft, frontRight, rearLeft, rearRight;
+    public final IMU imu;
 
     /**
      * Constructor
@@ -60,7 +58,7 @@ public class DriveSubsystem{
      * @param turn
      */
     public void drive(double x, double y, double turn) {
-        heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // Corrected field-centric math (if you use IMU)
         double rotatedX = x * Math.cos(-heading) - y * Math.sin(-heading);
@@ -96,7 +94,6 @@ public class DriveSubsystem{
 
     public void resetAngle() {
         imu.resetYaw();
-        heading= 0;
     }
 
     public double getAngle(){

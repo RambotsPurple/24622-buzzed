@@ -4,26 +4,26 @@ import com.pedropathing.api.Paths;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
+import org.firstinspires.ftc.teamcode.config.util.enums.Alliance;
 
-import org.firstinspires.ftc.teamcode.config.util.Alliance;
-
+/** Shared park route; blue mirrors the red poses and headings. */
 public class straight {
-    public  Alliance a;
-    private  PoseFactory poseFactory;
-    public straight(Alliance alliance){
-        a = alliance;
-        if (a == Alliance.RED) {
-             poseFactory = PoseFactory.degrees().mirrorX(70.75);
-        } else {
-             poseFactory = PoseFactory.degrees();
-        }
+    private final Pose start;
+    private final Pose park;
+    private final Pose parkControl;
+
+    public straight(Alliance alliance) {
+        PoseFactory poses = AlliancePoseFactory.forAlliance(alliance);
+        start = poses.of(9, 33, 90);
+        park = poses.of(8.6, 94, 180);
+        parkControl = poses.of(40, 8, 0);
     }
 
-    private final Pose start = poseFactory.of(9, 33, 90);
-    private final Pose park = poseFactory.of(8.6, 94, 180);
-    private final Pose parkControl1 = poseFactory.of(40, 8, 0);
+    public Pose startPose() {
+        return start;
+    }
 
     public Path park() {
-        return Paths.curve(start, parkControl1, park).linear(start, park);
+        return Paths.curve(start, parkControl, park).linear(start, park);
     }
 }
