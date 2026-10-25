@@ -14,7 +14,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double target;
     private final DcMotorEx shooter1;
     // Tune these gains for RPM feedback and a normalized power output.
-    private final PIDFController pidf = new PIDFController(0.4, 0.000, 0.004, 0.002);
+    private final PIDFController pidf = new PIDFController(0.0007, 0, 0, 0.00025);
     private boolean velocityControl = true;
     public ShooterSubsystem(HardwareMap hw) {
         shooter1 = hw.get(DcMotorEx.class, "s");
@@ -36,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!Double.isFinite(rpm) || rpm < 0) {
             throw new IllegalArgumentException("Shooter RPM must be finite and nonnegative");
         }
-        if (!velocityControl || target != rpm) {
+        if (!velocityControl || target <= rpm) {
             pidf.reset();
         }
         target = rpm;
