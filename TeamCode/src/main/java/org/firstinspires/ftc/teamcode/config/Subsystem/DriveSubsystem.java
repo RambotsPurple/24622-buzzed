@@ -11,14 +11,12 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 /**
- * backup drive
+ * Standalone backup drive for diagnostic OpModes. Do not instantiate alongside Pedro:
+ * this constructor changes the configuration of the same four drive motors.
  */
 public class DriveSubsystem{
-    private DcMotorEx frontLeft, frontRight, rearLeft, rearRight;
-    public IMU imu;
-    private double heading;
-    private double lastAngles;
-    private double angles;
+    private final DcMotorEx frontLeft, frontRight, rearLeft, rearRight;
+    public final IMU imu;
 
     /**
      * Constructor
@@ -35,7 +33,7 @@ public class DriveSubsystem{
         imu.initialize(
                 new IMU.Parameters(new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                        RevHubOrientationOnRobot.UsbFacingDirection.UP
+                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
                 ))
         );
 
@@ -60,7 +58,7 @@ public class DriveSubsystem{
      * @param turn
      */
     public void drive(double x, double y, double turn) {
-        heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // Corrected field-centric math (if you use IMU)
         double rotatedX = x * Math.cos(-heading) - y * Math.sin(-heading);
@@ -95,38 +93,13 @@ public class DriveSubsystem{
     }
 
     public void resetAngle() {
-//        lastAngles = imu.getRobotYawPitchRollAngles().getYaw();
         imu.resetYaw();
-        heading= 0;
-//        direction = 0;
     }
 
     public double getAngle(){
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
-    //    public double getAngle() {
-    //        // We experimentally determined the Z axis is the axis we want to use for heading angle.
-    //        // We have to process the angle because the imu works in euler angles so the Z axis is
-    //        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
-    //        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
-    //
-    //        direction = imu.getRobotYawPitchRollAngles().getYaw();
-    //
-    //
-    //        double deltaAngle = angles - lastAngles;
-    //
-    //        if (deltaAngle < -180)
-    //            deltaAngle += 360;
-    //        else if (deltaAngle > 180)
-    //            deltaAngle -= 360;
-    //
-    //        direction += deltaAngle;
-    //
-    //        lastAngles = angles;
-    //
-    //        return direction;
-    //    }
 
     public void setFrontLeftPower(double power) {
         frontLeft.setPower(power);
@@ -143,6 +116,7 @@ public class DriveSubsystem{
     public void setRearRightPower(double power) {
         rearRight.setPower(power);
     }
+
 
 
 } // DriveTrain

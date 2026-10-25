@@ -3,20 +3,22 @@ package org.firstinspires.ftc.teamcode.config.Subsystem;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
-public class IntakeSubsystem {
-    private DcMotorEx intake, solo;
+public class IntakeSubsystem extends SubsystemBase {
+    private final DcMotorEx intake;
 
-    public IntakeSubsystem(HardwareMap h){
-        intake = h.get(DcMotorEx.class,"i");
-        solo = h.get(DcMotorEx.class,"solo");
-        solo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public IntakeSubsystem(HardwareMap hardwareMap) {
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setDirection(DcMotor.Direction.REVERSE);
     }
 
-//    @todo
-//    make method to intake
-//    make method for solo roller
+    public void run(double power) {
+        intake.setPower(power);
+    }
 
-
+    public void stop() {
+        run(0);
+    }
 }

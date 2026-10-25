@@ -1,21 +1,21 @@
 package org.firstinspires.ftc.teamcode.config.Subsystem;
 
-import static org.firstinspires.ftc.teamcode.config.util.Pipeline.COLOR;
+import static org.firstinspires.ftc.teamcode.config.util.enums.Pipeline.COLOR;
 
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.*;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.config.util.Alliance;
-import org.firstinspires.ftc.teamcode.config.util.Pipeline;
+import org.firstinspires.ftc.teamcode.config.util.enums.Alliance;
+import org.firstinspires.ftc.teamcode.config.util.enums.Pipeline;
 
 import java.util.List;
 
 public class LimeLightSubsystem {
     private final Limelight3A limelight;
-    private int alliance;
+    private final int alliance;
 
     public  LimeLightSubsystem(HardwareMap hw, Alliance alliance) {
         limelight = hw.get(Limelight3A.class, "limelight");
@@ -31,7 +31,9 @@ public class LimeLightSubsystem {
     public double getDistTag() {
         FiducialResult tag = null;
         double tagDist = 0;
-        List<FiducialResult> results = limelight.getLatestResult().getFiducialResults();
+        LLResult result = limelight.getLatestResult();
+        if (result == null || !result.isValid()) return 0;
+        List<FiducialResult> results = result.getFiducialResults();
 
         if (results.isEmpty()) return 0;
 
@@ -49,30 +51,30 @@ public class LimeLightSubsystem {
 
     }//end getDist
 
+    // Null means no valid tag measurement is available.
+    public Double getVisibleTagHorizontalError() {
+        LLResult result = limelight.getLatestResult();
+        if (result == null || !result.isValid()) {
+            return null;
+        }
+        for (FiducialResult tag : result.getFiducialResults()) {
+            if (tag != null) {
+                return tag.getTargetXDegrees();
+            }
+        }
+        return null;
+    }
+
     public double getHorizontalErrorTag(){
-        FiducialResult tag = null;
-        double tagYaw = 0;
-        List<FiducialResult> results = limelight.getLatestResult().getFiducialResults();
-
-        if (results.isEmpty()) return 0;
-
-        for (FiducialResult fiducial : results) {
-            if (fiducial != null ){
-                tag = fiducial;
-                break;
-            }//end of if
-        }//end of for
-
-        if(tag !=null){
-            tagYaw = tag.getTargetXDegrees();
-        }//end of if
-
-        return tagYaw;
+        Double error = getVisibleTagHorizontalError();
+        return error == null ? 0 : error;
     } //end of getHoriError
 
     public double getHorizontalErrorColor(){
         double colorYaw = 0;
-        List<ColorResult> results = limelight.getLatestResult().getColorResults();
+        LLResult result = limelight.getLatestResult();
+        if (result == null || !result.isValid()) return 0;
+        List<ColorResult> results = result.getColorResults();
         for (ColorResult cr : results) {
             if(cr !=null){
                 colorYaw = cr.getTargetXDegrees();
@@ -81,7 +83,9 @@ public class LimeLightSubsystem {
     }
     public double getColorDist(){
         double colorDist = 0;
-        List<ColorResult> results = limelight.getLatestResult().getColorResults();
+        LLResult result = limelight.getLatestResult();
+        if (result == null || !result.isValid()) return 0;
+        List<ColorResult> results = result.getColorResults();
         for (ColorResult cr : results) {
             if(cr !=null){
                 colorDist = cr.getTargetPoseCameraSpace().getPosition().z/DistanceUnit.mmPerInch;
