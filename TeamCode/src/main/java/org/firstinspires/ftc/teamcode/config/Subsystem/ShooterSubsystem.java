@@ -10,7 +10,7 @@ import com.seattlesolvers.solverslib.controller.PIDFController;
 public class ShooterSubsystem extends SubsystemBase {
 
     // Motor RPM; matches the 28 ticks/revolution used in rpmIncra.
-    private static final double TICKS_PER_REV = 28.0;
+    public static final double TICKS_PER_REV = 28.0;
     private double target;
     private final DcMotorEx shooter1;
     // Tune these gains for RPM feedback and a normalized power output.
