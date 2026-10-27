@@ -2,9 +2,11 @@ repositories {
     mavenCentral()
     maven { url 'https://repo.dairy.foundation/releases/'}
     google() // Needed for androidx
+    maven { url = "https://mymaven.bylazar.com/releases" }
 }
 
 dependencies {
+//core
     implementation 'org.firstinspires.ftc:Inspection:11.2.1'
     implementation 'org.firstinspires.ftc:Blocks:11.2.1'
     //noinspection Aligned16KB
@@ -16,10 +18,17 @@ dependencies {
     implementation 'org.firstinspires.ftc:Vision:11.2.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
+//solvers
     implementation "org.solverslib:core:0.3.6" // core
     implementation "org.solverslib:pedroPathing:0.3.6" // pedroPathing
-
+//    pedro
     implementation 'com.pedropathing:revhub:3.0.2'
     implementation 'com.pedropathing:tuning:1.0.0'
+
+//    dairy foundation
+    implementation("dev.frozenmilk.sinister:Sloth:0.3.2")
+    implementation("com.acmerobotics.slothboard:dashboard:0.3.2+0.6.0")
+
+
 
 }

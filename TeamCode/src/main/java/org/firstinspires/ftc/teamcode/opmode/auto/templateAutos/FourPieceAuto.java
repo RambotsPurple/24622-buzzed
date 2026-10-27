@@ -18,14 +18,14 @@ public abstract class FourPieceAuto extends PedroAuto {
         return new SequentialCommandGroup(
                 new ShootSequence(robot.shooterSubsystem, robot.intakeSubsystem,
                         robot.transferSubsystem, 3200),
-                new FollowPathCommand(robot.getFollower(), path.toballs()),
+                new FollowPathCommand(robot.getFollower(), path.toBalls()),
                 new IntakeCommand(robot.intakeSubsystem, 1),
                 new WaitCommand(1500),
                 new IntakeCommand(robot.intakeSubsystem, 0),
-                new FollowPathCommand(robot.getFollower(), path.tostart()),
+                new FollowPathCommand(robot.getFollower(), path.toNextHive()),
                 new ShootSequence(robot.shooterSubsystem, robot.intakeSubsystem,
                         robot.transferSubsystem, 2900),
-                new FollowPathCommand(robot.getFollower(), path.topark())
+                new FollowPathCommand(robot.getFollower(), path.toPark())
         );
     }
 }

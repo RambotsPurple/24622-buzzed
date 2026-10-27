@@ -31,7 +31,7 @@ public abstract class PedroAuto extends CommandOpMode {
     @Override
     public final void preRun() {
         // Scheduling initializes commands immediately, so wait for Play.
-        robot.tStart();
+        // robot.aStart();
         schedule(routine);
     }
 
