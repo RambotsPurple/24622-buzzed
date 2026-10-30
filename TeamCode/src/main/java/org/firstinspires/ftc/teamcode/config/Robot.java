@@ -82,7 +82,7 @@ public class Robot {
     public void tPeriodic() {
         bulk();
         follower.manual(ManualDrive.fieldCentric(
-                -driver.getLeftY(), -driver.getLeftX(), driver.getRightX(),
+                driver.getLeftY(), -driver.getLeftX(), driver.getRightX(),
                 follower.pose().heading()));
         follower.update();
         scheduler.run();

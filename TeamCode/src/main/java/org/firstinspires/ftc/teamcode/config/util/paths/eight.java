@@ -20,10 +20,10 @@ public class eight {
     public eight(Alliance alliance) {
         PoseFactory poseFactory = AlliancePoseFactory.forAlliance(alliance);
         start = poseFactory.of(56, 8, 90);
-        toBalls = poseFactory.of(9.687, 8.2549, 260);
+        toBalls = poseFactory.of(9.687, 12, 260);
         toBallsControl1 = poseFactory.of(23.7968, 26.0777, 0);
-        toNextHiveStart = poseFactory.of(9.687, 8.2549, 260);
-        toNextHive = poseFactory.of(60.8039, 128.3922, 270);
+        toNextHiveStart = poseFactory.of(9.687, 12, 260);
+        toNextHive = poseFactory.of(60.8039, 115.3922, 270);
         toNextHiveControl1 = poseFactory.of(31.48, 97.1479, 0);
         toNextHiveControl2 = poseFactory.of(41.4668, 120.325, 0);
         toParkStart = poseFactory.of(60.8039, 128.3922, 270);
