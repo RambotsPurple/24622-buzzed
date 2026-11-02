@@ -1,6 +1,9 @@
 
 package org.firstinspires.ftc.teamcode.opmode.misc;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -68,6 +71,10 @@ public class PIDTuner extends LinearOpMode {
 
         intake.run(0);
         transfer.setPower(0);
+
+        // ---------- Panels ----------
+        TelemetryManager panels =
+                PanelsTelemetry.INSTANCE.getTelemetry();
 
         // ---------- Controller ----------
         PIDFController pidf =
@@ -341,7 +348,7 @@ public class PIDTuner extends LinearOpMode {
                     }
                 }
 
-                // ---------- Driver Station telemetry ----------
+                // ---------- Panels graph / telemetry ----------
                 if (graphTimer.seconds() >= GRAPH_INTERVAL) {
 
                     boolean ready =
@@ -349,6 +356,23 @@ public class PIDTuner extends LinearOpMode {
                                     && targetRpm > 0
                                     && Math.abs(errorRpm)
                                     <= READY_TOLERANCE;
+
+                    // Graph series
+                    panels.addData("shooter.targetRpm", targetRpm);
+                    panels.addData("shooter.actualRpm", actualRpm);
+                    panels.addData("shooter.errorRpm", errorRpm);
+                    panels.addData("shooter.motorPower", motorPower);
+
+                    // Coefficient data
+                    panels.addData("shooter.kP", gains[0]);
+                    panels.addData("shooter.kI", gains[1]);
+                    panels.addData("shooter.kD", gains[2]);
+                    panels.addData("shooter.kF", gains[3]);
+
+                    // Capture data
+                    panels.addData("shooter.shotDropRpm", shotDropRpm);
+                    panels.addData("shooter.recoverySeconds",
+                            recoveryTime);
 
                     // Driver Station telemetry
                     telemetry.addData("Enabled", enabled);
@@ -408,7 +432,7 @@ public class PIDTuner extends LinearOpMode {
                             "Recovery Time", "%.3f", recoveryTime
                     );
 
-                    telemetry.update();
+                    panels.update(telemetry);
                     graphTimer.reset();
                 }
 
