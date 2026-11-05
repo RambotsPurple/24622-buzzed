@@ -26,7 +26,7 @@ public class PIDTuner extends LinearOpMode {
     private static final double TICKS_PER_REV = 28.0;
 
     // ---------- Targets ----------
-    private static final double DEFAULT_RPM = 3200.0;
+    private static final double DEFAULT_RPM = 2650;
     private static final double RPM_STEP = 100.0;
     private static final double MAX_TARGET_RPM = 6000.0;
 
@@ -46,7 +46,7 @@ public class PIDTuner extends LinearOpMode {
             0.00001
     };
 
-    private final double[] gains = {0, 0, 0, 0};
+    private final double[] gains = {0.00045, 0, 0,.000290};
 
     private IntakeSubsystem intake;
     private TransferSubsystem transfer;
@@ -78,7 +78,7 @@ public class PIDTuner extends LinearOpMode {
 
         // ---------- Controller ----------
         PIDFController pidf =
-                new PIDFController(0, 0, 0, 0);
+                new PIDFController(0.00045, 0, 0, .000290);
 
         // ---------- State ----------
         double targetRpm = DEFAULT_RPM;
@@ -302,6 +302,8 @@ public class PIDTuner extends LinearOpMode {
                 motor.setPower(motorPower);
 
                 // ---------- Intake / transfer ----------
+                intake.run(0);
+                transfer.setPower(0);
                 boolean feeding =
                         gamepad2.right_trigger > 0.2
                                 && enabled
@@ -310,9 +312,11 @@ public class PIDTuner extends LinearOpMode {
                 if (feeding) {
                     intake.run(1);
                     transfer.setPower(1);
-                } else {
-                    intake.run(0);
-                    transfer.setPower(0);
+                } if(gamepad2.left_trigger > 0.2) {
+                    intake.run(-1);
+                    transfer.setPower(-1);
+                } if(gamepad2.a) {
+                    intake.run(1);
                 }
 
                 // ---------- Shot capture ----------
