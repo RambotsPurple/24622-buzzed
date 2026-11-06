@@ -112,7 +112,7 @@ public class Robot {
                 new SetShooterVelocityCommand(shooterSubsystem, 4200),
                 new SetShooterVelocityCommand(shooterSubsystem, 0));
         operator.getGamepadButton(GamepadKeys.Button.B).toggleWhenActive(
-                new SetShooterVelocityCommand(shooterSubsystem, 2600),
+                new SetShooterVelocityCommand(shooterSubsystem, 2650),
                 new SetShooterVelocityCommand(shooterSubsystem, 0));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenActive(

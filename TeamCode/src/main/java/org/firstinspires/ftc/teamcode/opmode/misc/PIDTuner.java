@@ -46,7 +46,7 @@ public class PIDTuner extends LinearOpMode {
             0.00001
     };
 
-    private final double[] gains = {0.00045, 0, 0,.000290};
+    private final double[] gains = {0.00082, 0, 0,.000275};
 
     private IntakeSubsystem intake;
     private TransferSubsystem transfer;
@@ -78,7 +78,7 @@ public class PIDTuner extends LinearOpMode {
 
         // ---------- Controller ----------
         PIDFController pidf =
-                new PIDFController(0.00045, 0, 0, .000290);
+                new PIDFController(0.00082, 0, 0, .000275);
 
         // ---------- State ----------
         double targetRpm = DEFAULT_RPM;
@@ -311,7 +311,7 @@ public class PIDTuner extends LinearOpMode {
 
                 if (feeding) {
                     intake.run(1);
-                    transfer.setPower(1);
+                    transfer.setPower(.8);
                 } if(gamepad2.left_trigger > 0.2) {
                     intake.run(-1);
                     transfer.setPower(-1);
