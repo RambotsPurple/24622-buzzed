@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.config;
 
 import android.widget.Switch;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
@@ -34,8 +35,11 @@ import org.firstinspires.ftc.teamcode.config.util.enums.States;
 import java.util.List;
 
 
-/** Shared hardware setup. Pedro is the only drivetrain owner in competition modes. */
+@Configurable
 public class Robot {
+    public static double turnP = 0.00002;
+    public static double turnD = 0.001;
+
     public final ShooterSubsystem shooterSubsystem;
     public final IntakeSubsystem intakeSubsystem;
     public final TransferSubsystem transferSubsystem;
@@ -48,7 +52,7 @@ public class Robot {
     private final CommandScheduler scheduler = CommandScheduler.getInstance();
     private GamepadEx driver;
     private GamepadEx operator;
-    private final PDController turnPD = new PDController(.00002,0.001);
+    private final PDController turnPD = new PDController(turnP, turnD);
     private final TelemetryManager panels;
     private  double targTelem =0.0;
 
@@ -135,6 +139,8 @@ public class Robot {
         follower.update();
     }
     public double turnTo(){
+        turnPD.setP(turnP);
+        turnPD.setD(turnD);
         double targ;
         double heading = Math.toDegrees(follower.pose().heading());
         double x = follower.pose().x() ;
