@@ -4,6 +4,7 @@ import android.widget.Switch;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.ManualDrive;
+import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -69,9 +70,21 @@ public class Robot {
 
     public Robot(HardwareMap hardwareMap, Alliance alliance, Gamepad driver,
                  Gamepad operator, Telemetry telemetry) {
+
         this(hardwareMap, alliance, telemetry);
         this.driver = new GamepadEx(driver);
         this.operator = new GamepadEx(operator);
+
+        // IN HOUSE SCRIMMAGE START POSES IF AUTO IS CRAP
+
+        // BLUE SIDE \\
+        // follower.setPose(new Pose(83,130,0)); //right side
+        // follower.setPose(new Pose(83,11,0)); //left side
+
+        // Red SIDE \\
+        // follower.setPose(new Pose(56,130,0)); //Left side
+        follower.setPose(new Pose(56,11,0)); //Right side
+
         setState(States.MANUAL);
     }
 
