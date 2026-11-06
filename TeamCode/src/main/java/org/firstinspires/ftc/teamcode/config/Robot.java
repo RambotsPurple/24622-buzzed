@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.config;
 
 import android.widget.Switch;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.ManualDrive;
 import com.pedropathing.math.Pose;
@@ -47,10 +49,11 @@ public class Robot {
     private GamepadEx driver;
     private GamepadEx operator;
     private final PDController turnPD = new PDController(.00002,0.001);
-
-
+    private final TelemetryManager panels;
+    private  double targTelem =0.0;
 
     protected States state;
+
 
     public Robot(HardwareMap hardwareMap, Alliance alliance, Telemetry telemetry) {
         this.alliance = alliance;
@@ -66,6 +69,7 @@ public class Robot {
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         transferSubsystem = new TransferSubsystem(hardwareMap);
         scheduler.registerSubsystem(shooterSubsystem, intakeSubsystem, transferSubsystem);
+         panels = PanelsTelemetry.INSTANCE.getTelemetry();
     }
 
     public Robot(HardwareMap hardwareMap, Alliance alliance, Gamepad driver,
@@ -130,7 +134,7 @@ public class Robot {
                 follower.pose().heading()));
         follower.update();
     }
-    public  double turnTo(){
+    public double turnTo(){
         double targ;
         double heading = Math.toDegrees(follower.pose().heading());
         double x = follower.pose().x() ;
@@ -161,7 +165,7 @@ public class Robot {
         }//end of if/else
         targ = Math.toDegrees(Math.atan2(y,x));
         targ = (targ < 0)? targ +360: targ; //this line looks very weird IK
-
+        targTelem = targ;
         // will need to tune
         if((heading > targ+4) || (heading < targ-4)){
             double power = turnPD.calculate(heading, targ);
@@ -215,6 +219,9 @@ public class Robot {
 
 
     public void updateTelemetry() {
+        panels.addData("heading", Math.toDegrees(follower.pose().heading()));
+        panels.addData("target", targTelem);
+        telemetry.addData("target", targTelem);
         telemetry.addData("Alliance", alliance);
         telemetry.addData("x", follower.pose().x());
         telemetry.addData("y", follower.pose().y());
@@ -223,6 +230,7 @@ public class Robot {
                 shooterSubsystem.getVelocity(), shooterSubsystem.getTarget());
         telemetry.addData("Loop (ms)", "%.1f", loopTimer.milliseconds());
         loopTimer.reset();
+        panels.update(telemetry);
         telemetry.update();
     }
 
