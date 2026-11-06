@@ -1,16 +1,22 @@
 package org.firstinspires.ftc.teamcode.config;
 
+import android.widget.Switch;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.ManualDrive;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.button.Trigger;
+import com.seattlesolvers.solverslib.controller.PDController;
+import com.seattlesolvers.solverslib.controller.PIDFController;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.config.Commands.Command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.config.Commands.Command.SetShooterVelocityCommand;
@@ -19,8 +25,11 @@ import org.firstinspires.ftc.teamcode.config.Subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.config.Subsystem.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.config.Subsystem.TransferSubsystem;
 import org.firstinspires.ftc.teamcode.config.pedro.Constants;
+import org.firstinspires.ftc.teamcode.config.util.constants;
 import org.firstinspires.ftc.teamcode.config.util.enums.Alliance;
+import org.firstinspires.ftc.teamcode.config.util.enums.States;
 import java.util.List;
+
 
 /** Shared hardware setup. Pedro is the only drivetrain owner in competition modes. */
 public class Robot {
@@ -36,6 +45,11 @@ public class Robot {
     private final CommandScheduler scheduler = CommandScheduler.getInstance();
     private GamepadEx driver;
     private GamepadEx operator;
+    private final PDController turnPD = new PDController(.00002,0.001);
+
+
+
+    protected States state;
 
     public Robot(HardwareMap hardwareMap, Alliance alliance, Telemetry telemetry) {
         this.alliance = alliance;
@@ -58,6 +72,11 @@ public class Robot {
         this(hardwareMap, alliance, telemetry);
         this.driver = new GamepadEx(driver);
         this.operator = new GamepadEx(operator);
+        setState(States.MANUAL);
+    }
+
+    private void setState(States states) {
+        this.state = states;
     }
 
     public Follower getFollower() {
@@ -81,13 +100,64 @@ public class Robot {
     /** Teleop owns its scheduler loop; autonomous uses CommandOpMode's scheduler. */
     public void tPeriodic() {
         bulk();
-        follower.manual(ManualDrive.fieldCentric(
-                driver.getLeftY(), -driver.getLeftX(), driver.getRightX(),
-                follower.pose().heading()));
-        follower.update();
+        drive();
         scheduler.run();
         updateTelemetry();
     }
+    // adding a auto lock with odom,later will introduce LL EKF fusion
+    public void drive(){
+
+        double rot = switch (state) {
+            case LOCKED -> turnTo();
+            case MANUAL -> driver.getRightX();
+        };
+
+        follower.manual(ManualDrive.fieldCentric(
+                driver.getLeftY(), -driver.getLeftX(),rot,
+                follower.pose().heading()));
+        follower.update();
+    }
+    public  double turnTo(){
+        double targ;
+        double heading = Math.toDegrees(follower.pose().heading());
+        double x = follower.pose().x() ;
+        double y = follower.pose().y();
+        boolean middleOver = y>71;
+
+        // math logic basic trig lit pythag
+        if(middleOver){
+            double eX;
+            double eY;
+            if(alliance.equals(Alliance.BLUE)){
+                eX = constants.BlueLeft[0] - x;
+                eY = constants.BlueLeft[1] - y;
+            }else{
+                eX = constants.redLeft[0] - x;
+                eY = constants.redLeft[1] - y;
+            }
+        }else{
+            double eX;
+            double eY;
+            if(alliance.equals(Alliance.BLUE)){
+                eX = constants.BlueRight[0] - x;
+                eY = constants.BlueRight[1] - y;
+            }else{
+                eX = constants.redRight[0] - x;
+                eY = constants.redRight[1] - y;
+            }
+        }//end of if/else
+        targ = Math.toDegrees(Math.atan2(y,x));
+        targ = (targ < 0)? targ +360: targ; //this line looks very weird IK
+
+        // will need to tune
+        if((heading > targ+4) || (heading < targ-4)){
+            double power = turnPD.calculate(heading, targ);
+            return Range.clip(power, -1.0, 1.0);
+        }//end of if
+
+        return 0;
+    }
+
 
     /** Bind once during teleop initialization. */
     public void tele() {
@@ -109,19 +179,33 @@ public class Robot {
                 .whenInactive(new OutputCommandGroup(intakeSubsystem, transferSubsystem, 0));
 
         operator.getGamepadButton(GamepadKeys.Button.A).toggleWhenActive(
-                new SetShooterVelocityCommand(shooterSubsystem, 4200),
+                new SetShooterVelocityCommand(shooterSubsystem, 2900),
                 new SetShooterVelocityCommand(shooterSubsystem, 0));
         operator.getGamepadButton(GamepadKeys.Button.B).toggleWhenActive(
                 new SetShooterVelocityCommand(shooterSubsystem, 2650),
                 new SetShooterVelocityCommand(shooterSubsystem, 0));
+        // idle speed
+        operator.getGamepadButton(GamepadKeys.Button.X).toggleWhenActive(
+                new SetShooterVelocityCommand(shooterSubsystem, 1000),
+                new SetShooterVelocityCommand(shooterSubsystem, 0));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenActive(
                 new InstantCommand(() -> follower.setPose(follower.pose().withHeading(0))));
+
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).toggleWhenActive(
+                new InstantCommand(() -> setState(States.LOCKED)),
+                new InstantCommand(() -> setState(States.MANUAL))
+        );
+
+
     }
+
 
     public void updateTelemetry() {
         telemetry.addData("Alliance", alliance);
-        telemetry.addData("Pose", follower.pose());
+        telemetry.addData("x", follower.pose().x());
+        telemetry.addData("y", follower.pose().y());
+        telemetry.addData("heading", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Shooter RPM (actual / target)", "%.0f / %.0f",
                 shooterSubsystem.getVelocity(), shooterSubsystem.getTarget());
         telemetry.addData("Loop (ms)", "%.1f", loopTimer.milliseconds());

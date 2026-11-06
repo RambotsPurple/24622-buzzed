@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 
+import org.firstinspires.ftc.teamcode.config.util.constants;
+
 public class ShooterSubsystem extends SubsystemBase {
 
     // Motor RPM; matches the 28 ticks/revolution used in rpmIncra.
@@ -14,7 +16,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double target;
     private final DcMotorEx shooter1;
     // Tune these gains for RPM feedback and a normalized power output.
-    private final PIDFController pidf = new PIDFController(0.00082, 0, 0, .000275);
+    private final PIDFController pidf = new PIDFController(constants.flyWheelPIDF);
     private boolean velocityControl = true;
     public ShooterSubsystem(HardwareMap hw) {
         shooter1 = hw.get(DcMotorEx.class, "s");
