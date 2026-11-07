@@ -173,7 +173,7 @@ public class Robot {
         targ = (targ < 0)? targ +360: targ; //this line looks very weird IK
         targTelem = targ;
         // will need to tune
-        if((heading > targ+4) || (heading < targ-4)){
+        if((heading > targ+1) || (heading < targ-1)){
             double power = turnPD.calculate(heading, targ);
             return Range.clip(power, -1.0, 1.0);
         }//end of if
