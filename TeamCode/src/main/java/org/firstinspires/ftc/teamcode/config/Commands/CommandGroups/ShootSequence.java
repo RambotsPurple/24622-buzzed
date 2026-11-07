@@ -18,7 +18,7 @@ public class ShootSequence extends SequentialCommandGroup {
         super(
                 new SetShooterVelocityCommand(shooter, rpm),
                 new WaitCommand(SPIN_UP_MS),
-                new OutputCommandGroup(intake, transfer, 1),
+                new OutputCommandGroup(intake, transfer, .7),
                 new WaitCommand(FEED_MS),
                 new ParallelCommandGroup(
                         new SetShooterVelocityCommand(shooter, 0),

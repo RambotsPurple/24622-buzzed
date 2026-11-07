@@ -37,8 +37,8 @@ import java.util.List;
 
 @Configurable
 public class Robot {
-    public static double turnP = 0.00002;
-    public static double turnD = 0.001;
+    public static double turnP = 0.032;
+    public static double turnD = 0.000;
 
     public final ShooterSubsystem shooterSubsystem;
     public final IntakeSubsystem intakeSubsystem;
@@ -91,7 +91,7 @@ public class Robot {
 
         // Red SIDE \\
         // follower.setPose(new Pose(56,130,0)); //Left side
-        follower.setPose(new Pose(56,11,0)); //Right side
+        //follower.setPose(new Pose(56,11,0));   //Right side
 
         setState(States.MANUAL);
     }
@@ -130,7 +130,7 @@ public class Robot {
 
         double rot = switch (state) {
             case LOCKED -> turnTo();
-            case MANUAL -> driver.getRightX();
+            case MANUAL -> -driver.getRightX();
         };
 
         follower.manual(ManualDrive.fieldCentric(
@@ -146,11 +146,12 @@ public class Robot {
         double x = follower.pose().x() ;
         double y = follower.pose().y();
         boolean middleOver = y>71;
+        double eX =0;
+        double eY=0;
 
         // math logic basic trig lit pythag
         if(middleOver){
-            double eX;
-            double eY;
+
             if(alliance.equals(Alliance.BLUE)){
                 eX = constants.BlueLeft[0] - x;
                 eY = constants.BlueLeft[1] - y;
@@ -159,8 +160,7 @@ public class Robot {
                 eY = constants.redLeft[1] - y;
             }
         }else{
-            double eX;
-            double eY;
+
             if(alliance.equals(Alliance.BLUE)){
                 eX = constants.BlueRight[0] - x;
                 eY = constants.BlueRight[1] - y;
@@ -169,7 +169,7 @@ public class Robot {
                 eY = constants.redRight[1] - y;
             }
         }//end of if/else
-        targ = Math.toDegrees(Math.atan2(y,x));
+        targ = Math.toDegrees(Math.atan2(eY,eX));
         targ = (targ < 0)? targ +360: targ; //this line looks very weird IK
         targTelem = targ;
         // will need to tune

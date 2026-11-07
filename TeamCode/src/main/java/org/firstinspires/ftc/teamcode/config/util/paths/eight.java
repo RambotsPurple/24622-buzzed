@@ -15,19 +15,21 @@ public class eight {
     private final Pose toNextHive;
     private final Pose toNextHiveControl1;
     private final Pose toNextHiveControl2;
+    private final Pose toNextHiveControl3;
     private final Pose toParkStart;
     private final Pose toPark;
     public eight(Alliance alliance) {
         PoseFactory poseFactory = AlliancePoseFactory.forAlliance(alliance);
-        start = poseFactory.of(56, 8, 90);
-        toBalls = poseFactory.of(9.687, 12, 260);
-        toBallsControl1 = poseFactory.of(23.7968, 26.0777, 0);
-        toNextHiveStart = poseFactory.of(9.687, 12, 260);
+        start = poseFactory.of(56, 4, 90);
+        toBalls = poseFactory.of(9.4179, 12, 260);
+        toBallsControl1 = poseFactory.of(36.8846, 33.4442, 0);
+        toNextHiveStart =poseFactory.of(9.4179, 9.7852, 260);
         toNextHive = poseFactory.of(60.8039, 115.3922, 270);
-        toNextHiveControl1 = poseFactory.of(31.48, 97.1479, 0);
-        toNextHiveControl2 = poseFactory.of(41.4668, 120.325, 0);
-        toParkStart = poseFactory.of(60.8039, 128.3922, 270);
-        toPark = poseFactory.of(19.6373, 116.8175, 90);
+        toNextHiveControl1 = poseFactory.of(39.3966, 33.7479, 0);
+        toNextHiveControl2 = poseFactory.of(16.0581, 119.546, 0);
+        toNextHiveControl3 = poseFactory.of(39.5554, 108.13, 0);
+        toParkStart = poseFactory.of(61.4383, 131.5, 270);
+        toPark = poseFactory.of(18.6642, 105.323, 0);
     }
 
     public Pose startPose() {
@@ -39,7 +41,7 @@ public class eight {
     }
 
     public Path toNextHive() {
-        return Paths.curve(toNextHiveStart, toNextHiveControl1, toNextHiveControl2, toNextHive).linear(toNextHiveStart, toNextHive);
+        return Paths.curve(toNextHiveStart, toNextHiveControl1, toNextHiveControl2, toNextHiveControl3, toNextHive).linear(toNextHiveStart, toNextHive);
     }
 
     public Path toPark() {
